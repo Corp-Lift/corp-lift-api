@@ -15,6 +15,7 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 const connection = connect();
+var socket = require('socket.io');
 
 /**
  * Expose
@@ -42,8 +43,18 @@ connection
 
 function listen() {
     if (app.get('env') === 'test') return;
-    app.listen(port);
+    var server = app.listen(port);
     console.log('Express app started on port ' + port);
+
+    var io = socket(server);
+    io.on('connection', (socket) => {
+    
+        console.log('made socket connection', socket.id);
+
+        socket.on('sendRequest', function(data){
+            io.sockets.emit('ackReq', data);
+        });
+    });
 }
 
 function connect() {
