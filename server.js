@@ -50,9 +50,15 @@ function listen() {
     io.on('connection', (socket) => {
     
         console.log('made socket connection', socket.id);
+        
+        socket.emit('newConnection', socket.id);
 
         socket.on('sendRequest', function(data){
             io.sockets.emit('ackReq', data);
+        });
+
+        socket.on('rideAccepted', function(data){
+            io.sockets.emit('rideAccepted', data);
         });
     });
 }
